@@ -1,11 +1,14 @@
 from tkinter import *
+import os
 # From the  installed Pytube module, import the youtube library
 from pytube import YouTube
 
 def download():
     url = YouTube(str(link.get())) #This captures the link(url) and locates it from YouTube.
     video = url.streams.get_highest_resolution()
-    video.download('C:\\Users\lemba\PycharmProjects\ProyectoComputacion') # This is the method with the instruction to download the video.
+    cwd = os.getcwd()
+    print(cwd)
+    video.download(cwd) # This is the method with the instruction to download the video.
     Label(root, text="Downloaded", font="arial 15").place(x=100, y=120) #Once the video is downloaded, this label `downloaded` is displayed to show dowload completion.
 
 
