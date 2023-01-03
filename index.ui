@@ -437,7 +437,7 @@
     <item row="1" column="2">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="pagina_descarga">
        <layout class="QGridLayout" name="gridLayout_2">
@@ -479,7 +479,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>832</width>
+                <width>852</width>
                 <height>1111022</height>
                </rect>
               </property>
@@ -636,43 +636,50 @@
             <widget class="QComboBox" name="comboBox_Categorias">
              <item>
               <property name="text">
-               <string>Vegetales</string>
+               <string>Arroz y pasta</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Dulces</string>
+               <string>Bebida</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Carnes</string>
+               <string>Carne</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Pescados</string>
+               <string>Dulce</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Variados</string>
+               <string>Pescado</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Arroz y Pasta</string>
+               <string>Variado</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Bebidas</string>
+               <string>Vegetal</string>
               </property>
              </item>
             </widget>
            </item>
            <item>
             <widget class="QLineEdit" name="txt_paths"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="categoriabtnAbrir">
+             <property name="text">
+              <string>Abrir</string>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QPushButton" name="categoriabtnAceptar">
@@ -796,7 +803,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>302</width>
+                <width>98</width>
                 <height>11111022</height>
                </rect>
               </property>
@@ -1056,8 +1063,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>51</y>
+     <x>244</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
      <x>35</x>
@@ -1072,8 +1079,8 @@
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>225</x>
-     <y>43</y>
+     <x>244</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
      <x>138</x>
