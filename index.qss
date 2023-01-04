@@ -1,0 +1,57 @@
+    #MainWindow {
+		background-color: #fff;
+	}
+
+	#btn {
+		padding: 5px;
+		border: none;
+		width: 30px;
+		height: 30px;
+	}
+
+	#widget {
+		background-color: #f9fafd;
+	}
+	#sidebarMin {
+		background-color: #EC6433;
+		width:50px;
+	}
+
+	#sidebarMin QPushButton, QLabel {
+		height:50px;
+		border:none;
+	}
+
+	#sidebarMin QPushButton:hover {
+		background-color: #FFAC33;
+	}
+
+	#menuIcon {
+		padding: 5px;
+	}
+
+	#sidebarExpand {
+		background-color: #EC6433;
+	}
+
+	#sidebarExpand QPushButton {
+		border:none;
+		border-radius: 3px;
+		text-align: left;
+		padding: 8px 0 8px 15px;
+		color: #6D6D6D;
+	}
+
+	#sidebarExpand QPushButton:hover {
+		background-color: #FFAC33;
+	}
+
+	#sidebarExpand QPushButton:checked {
+		color: #fff;
+	}
+
+	#expandMenuIcon {
+		padding: 5px;
+		color: black;
+	}
+

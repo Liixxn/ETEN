@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icons/carrito-de-compras.png</file>
+    <file>icons/data-classification.png</file>
+    <file>icons/downloading.png</file>
+    <file>icons/exit.png</file>
+    <file>icons/folder.png</file>
+    <file>icons/menu-desplegable.png</file>
+    <file>icons/more.png</file>
+    <file>icons/pin.png</file>
+    <file>icons/recipe-book.png</file>
+  </qresource>
+</RCC>
