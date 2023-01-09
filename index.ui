@@ -479,7 +479,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>849</width>
+                <width>832</width>
                 <height>1111022</height>
                </rect>
               </property>
@@ -749,7 +749,7 @@
            <widget class="QLineEdit" name="lineEdit"/>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="SeleecionarRecetas">
             <property name="text">
              <string>Seleccionar</string>
             </property>
@@ -770,7 +770,7 @@
            <widget class="QLineEdit" name="lineEdit_2"/>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="SeleccionarModelo">
             <property name="text">
              <string>Seleccionar</string>
             </property>
@@ -812,9 +812,9 @@
            <widget class="QLineEdit" name="lineEdit_3"/>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="GuardarComo">
             <property name="text">
-             <string>Seleccionar</string>
+             <string>Guardar como</string>
             </property>
            </widget>
           </item>
@@ -875,7 +875,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>299</width>
+                <width>98</width>
                 <height>11111022</height>
                </rect>
               </property>
