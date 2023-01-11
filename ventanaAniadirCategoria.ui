@@ -95,6 +95,9 @@
     <property name="text">
      <string>Añadir</string>
     </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
    </widget>
   </widget>
  </widget>
