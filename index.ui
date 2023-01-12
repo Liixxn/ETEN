@@ -440,7 +440,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pagina_descarga">
        <layout class="QGridLayout" name="gridLayout_2">
@@ -1194,7 +1194,28 @@
           </item>
          </layout>
         </item>
-        <item row="2" column="0">
+        <item row="4" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_21">
+          <item>
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Guardar resultado:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_3"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="GuardarComo">
+            <property name="text">
+             <string>Guardar como</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_20">
           <item>
            <widget class="QTableView" name="tableView"/>
@@ -1215,26 +1236,15 @@
           </item>
          </layout>
         </item>
-        <item row="3" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_21">
-          <item>
-           <widget class="QLabel" name="label_15">
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Guardar resultado:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_3"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="GuardarComo">
-            <property name="text">
-             <string>Guardar como</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="btnConfirmarClasificacion">
+          <property name="text">
+           <string>Ejecutar</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1291,7 +1301,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>299</width>
+                <width>98</width>
                 <height>11111022</height>
                </rect>
               </property>
