@@ -437,7 +437,7 @@
     <item row="1" column="2">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pagina_descarga">
        <layout class="QGridLayout" name="gridLayout_2">
@@ -495,7 +495,7 @@
                  <widget class="QComboBox" name="comboBoxElegir">
                   <item>
                    <property name="text">
-                    <string>Lista de ReproducciÃ³n</string>
+                    <string>Lista de Reproducción</string>
                    </property>
                   </item>
                   <item>
@@ -614,8 +614,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>849</width>
-                <height>1111022</height>
+                <width>861</width>
+                <height>1111018</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -1026,7 +1026,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>98</width>
-                <height>11111022</height>
+                <height>11111018</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_17">
