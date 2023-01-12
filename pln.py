@@ -1,10 +1,5 @@
 import tkinter.messagebox
-from tkinter.filedialog import askopenfilename, askdirectory
-from tkinter import *
 
-
-
-opciones = ["Arroz y pasta", "Bebida", "Carne", "Dulce", "Pescado", "Variado", "Vegetal"]
 
 
 
@@ -19,6 +14,7 @@ def comprobarCategoria(rutaCategoria, indexOpcion, rutasCategorias):
     if indexOpcion not in rutasCategorias:
 
         for indice in rutasCategorias.values():
+
             if rutaCategoria in indice:
                 txt_otherpath = True
                 tkinter.messagebox.showerror("Error", "La carpeta seleccionada ya está asociada a otra categoría.")
@@ -40,6 +36,7 @@ def comprobarCategoria(rutaCategoria, indexOpcion, rutasCategorias):
             rutasCategorias[indexOpcion].append(rutaCategoria)
             tkinter.messagebox.showinfo("Información", "Se ha modificado la ruta correctamente.")
             print("La categoria existe pero la ruta no")
+
 
     return rutasCategorias
 

@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="icons">
     <file>icons/carrito-de-compras.png</file>
+    <file>loading.gif</file>
     <file>icons/data-classification.png</file>
     <file>icons/downloading.png</file>
     <file>icons/exit.png</file>

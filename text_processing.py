@@ -1,30 +1,26 @@
 import os
-import natsort
-import numpy as np
-from tkinter.filedialog import askopenfilename, askdirectory
 from pathlib import Path
-from nltk.tokenize import sent_tokenize
-from nltk.corpus import stopwords
-from nltk.tokenize import TreebankWordTokenizer
-import re
 from nltk import word_tokenize, RegexpTokenizer
-from nltk.stem import PorterStemmer
 import natsort
 from nltk.stem import SnowballStemmer
-from pandas import DataFrame
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import Pipeline
 
 pd.options.mode.chained_assignment = None
 
-listaRecetas = []
-listaCategoria = []
-
-
-df_counts = pd.DataFrame(columns=["Carpeta Categorias", "Total"])
 
 def process_text(rutasCategorias):
+    listaRecetas = []
+    listaCategoria = []
+    listaCuentaCarpeta = []
+    listaCuentaFicheros = []
+    numeroTotalRecetas = 0
+
     for i, val in rutasCategorias.items():
 
         try:
@@ -32,12 +28,9 @@ def process_text(rutasCategorias):
 
             sorted_files = natsort.natsorted(dirFiles, reverse=False)
 
-            print("Numero de carpetas: ", len(rutasCategorias))
-            print("Para la carpeta ", rutasCategorias[i])
-            print("Numero de recetas: ", len(sorted_files))
-
-            df_counts.append(rutasCategorias[i], len(sorted_files))
-
+            listaCuentaCarpeta.append(i)
+            listaCuentaFicheros.append(len(sorted_files))
+            numeroTotalRecetas += len(sorted_files)
 
             for j in range(len(sorted_files)):
                 f = open(val[0] + '/' + sorted_files[j], "r", encoding="ANSI")
@@ -46,16 +39,15 @@ def process_text(rutasCategorias):
                 listaCategoria.append(i)
 
 
-
         except Exception as e:
             print(e)
 
-    return listaRecetas, listaCategoria, df_counts
+    return listaRecetas, listaCategoria, listaCuentaCarpeta, listaCuentaFicheros, numeroTotalRecetas
 
 
 def tratamientoBasico(df_sinTratar):
     listatokens = []
-    print("Aqui")
+
     for indiceDF, fila in df_sinTratar.iterrows():
         tokenizer = RegexpTokenizer(r'\w+')
         tokens = tokenizer.tokenize(fila["Ficheros"])
@@ -72,7 +64,11 @@ def quit_stopwords(df_conStopwords):
     listaStopwords = []
     try:
         # Se carga en fichero de las stopwords
-        txt_stopwords = open("stop_words_spanish.txt", "r")
+        ruta = os.getcwd()
+        data_folder = Path(ruta + "/stopwords/")
+        archivoAbir = data_folder / "stop_words_spanish.txt"
+
+        txt_stopwords = open(archivoAbir, "r")
         stop_words = txt_stopwords.read()
 
         filtered_sentence = []
@@ -85,7 +81,6 @@ def quit_stopwords(df_conStopwords):
             df_conStopwords["Ficheros"][i] = listaStopwords[i]
 
     except Exception as e:
-        print("Error al abrir el el fichero de stopwords")
         print(e)
 
     return df_conStopwords
@@ -96,7 +91,6 @@ def stemming(df_sinStemming):
     listaStemming = []
     lista_stem = []
 
-    print("llega stemming")
     # Se establece el idioma
     stemmer = SnowballStemmer('spanish')
 
@@ -116,65 +110,127 @@ def stemming(df_sinStemming):
 
 
 
+
+
+
+
+
+
+
+
+
 # Funcion que cuenta el numero de apariciones de cada palabra en cada receta y calcula su peso
-def calculate_weight(df_category):
-    # Lista que guardara las palabras unidas de cada receta
-    list_joined = []
+def calculate_weightKnn(df_entrenamiento):
+    listaUnidos = []
+    for i in range(len(df_entrenamiento["Ficheros"])):
+        unidos = " ".join(df_entrenamiento["Ficheros"][i])
 
-    lista_count = []
+        df_entrenamiento["Ficheros"][i] = str(unidos)
 
-    # Se crea el objeto que cuenta el numero de apariciones
-    vec_weight = CountVectorizer(analyzer='word', lowercase=False, preprocessor=None, tokenizer=None, stop_words=None,
-                                 min_df=1)
+    X = df_entrenamiento['Ficheros']
+    y = df_entrenamiento['Categorias']
 
-    X_train, X_test, Y_train, Y_test = train_test_split(df_category["Ficheros"], df_category["Categorias"],
-                                                        test_size=0.2)
-    Y_train = list(Y_train)
-    print(X_train)
-    # Ahora vecrtorizamos X_train y X_cv para poder meterlo en el modelo de clasificación
-    # Set de entrenamiento
-    arrayTemp = []
-    for i, j in enumerate(X_train):
-        arrayTemp.append(" ".join(j))
-        print(arrayTemp)
-    X_train = vec_weight.fit_transform(arrayTemp)
-    X_train = X_train.toarray()
+    # We use a pipeline to vectorize the data, then apply tfidf, and fit a kNN model
+    model_knn = Pipeline([('vect', CountVectorizer(lowercase=False, preprocessor=None, tokenizer=None, stop_words=None,
+                                                   min_df=1)),
+                          ('tfidf', TfidfTransformer()),
+                          ('knn', KNeighborsClassifier())])
 
-    print(X_train)
+    # Fitting the model
+    model_knn.fit(X, y)
 
-    # # Se recorre la lista y se unen las palabras de cada receta con un espacio entre medias
-    # for i in range(len(list_category)):
-    #
-    #     print(list_category[i])
-    #     joined = " ".join(list_category[i])
-    #
-    #
-    #     list_joined.append(joined)
-    #
-    # print(list_joined)
-    # # Se ejecuta el countVectorizer
-    # matrix_count = vec_weight.fit_transform(list_joined)
-    # print(matrix_count.shape)
-    # # Se pasa a array
-    # array_matrix_count = matrix_count.toarray()
-    #
-    # # Se pasan los datos a una tabla para su visualizacion
-    # df_weight = pd.DataFrame(data=array_matrix_count, columns=vec_weight.get_feature_names_out())
-    # #print(df_weight)
-    #
-    #
-    #
-    # tfi = TfidfTransformer()
-    # matrix_tfi = tfi.fit_transform(array_matrix_count)
-    # print(matrix_tfi.shape)
-    # array_matrix_tfi = matrix_tfi.toarray()
-    #
-    # df_tfi = pd.DataFrame(data=array_matrix_tfi, columns=vec_weight.get_feature_names_out())
-    # print(df_tfi)
-    # print(array_matrix_tfi)
-    #
-    # # La matriz tiene que ser de 3 dimensiones en este caso, tiene que tener el mismo tamanio que las opciones
-    # # En este caso es 7, por lo que tendria que haber 7 recetas en la 2nd dimension del array de rutas
-    # # es decir [1º dimension, las categorias (seran 7) [ 2ºnd dimension los txt de cada categoria (numero que sea
-    # # [ 3º dimension, las palabras de cada receta (numero que sea)]   2ºnd dimesnion  ]    3º dimension ]
-    # clf = MultinomialNB().fit(array_matrix_tfi, options)
+
+
+    precisionKnn = round(model_knn.score(X, y), 4) * 100
+
+    y_train_pred = model_knn.predict(X)
+    cm_train = confusion_matrix(y, y_train_pred)
+
+    df_matrix_confusion_entrenamiento = pd.DataFrame(cm_train)
+
+    sumaPositivos = 0
+    sumaFalsosPositivos = 0
+
+    for i in range(len(df_matrix_confusion_entrenamiento)):
+        for j in range(len(df_matrix_confusion_entrenamiento[i])):
+            if i == j:
+                sumaPositivos += df_matrix_confusion_entrenamiento[i][j]
+            else:
+                sumaFalsosPositivos += df_matrix_confusion_entrenamiento[i][j]
+
+    return df_matrix_confusion_entrenamiento, precisionKnn, sumaPositivos, sumaFalsosPositivos, model_knn
+
+
+def calculate_weightRF(df_entrenamiento):
+    listaUnidos = []
+    for i in range(len(df_entrenamiento["Ficheros"])):
+        unidos = " ".join(df_entrenamiento["Ficheros"][i])
+
+        df_entrenamiento["Ficheros"][i] = str(unidos)
+
+    X = df_entrenamiento['Ficheros']
+    y = df_entrenamiento['Categorias']
+
+    model_rf = Pipeline([('vect', CountVectorizer(lowercase=False, preprocessor=None, tokenizer=None, stop_words=None,
+                                                  min_df=1)),
+                         ('tfidf', TfidfTransformer()),
+                         ('rf', RandomForestClassifier())])
+
+    model_rf.fit(X, y)
+    precisionRF = round(model_rf.score(X, y), 4) * 100
+
+    y_train_pred = model_rf.predict(X)
+    cm_train = confusion_matrix(y, y_train_pred)
+
+    df_matrix_confusion_entrenamiento = pd.DataFrame(cm_train)
+
+    sumaPositivos = 0
+    sumaFalsosPositivos = 0
+
+    for i in range(len(df_matrix_confusion_entrenamiento)):
+        for j in range(len(df_matrix_confusion_entrenamiento[i])):
+            if i == j:
+                sumaPositivos += df_matrix_confusion_entrenamiento[i][j]
+            else:
+                sumaFalsosPositivos += df_matrix_confusion_entrenamiento[i][j]
+
+    return df_matrix_confusion_entrenamiento, precisionRF, sumaPositivos, sumaFalsosPositivos, model_rf
+
+
+def calculate_weightNB(df_entrenamiento):
+    listaUnidos = []
+    for i in range(len(df_entrenamiento["Ficheros"])):
+        unidos = " ".join(df_entrenamiento["Ficheros"][i])
+
+        df_entrenamiento["Ficheros"][i] = str(unidos)
+
+    X = df_entrenamiento['Ficheros']
+    y = df_entrenamiento['Categorias']
+
+    # We use a pipeline to vectorize the data, then apply tfidf, and fit a kNN model
+    model_nb = Pipeline([('vect', CountVectorizer(lowercase=False, preprocessor=None, tokenizer=None, stop_words=None,
+                                                  min_df=1)),
+                         ('tfidf', TfidfTransformer()),
+                         ('nb', MultinomialNB())])
+
+    # Fitting the model
+    model_nb.fit(X, y)
+
+    precisionNB = round(model_nb.score(X, y), 4) * 100
+
+    y_train_pred = model_nb.predict(X)
+    cm_train = confusion_matrix(y, y_train_pred)
+
+    df_matrix_confusion_entrenamiento = pd.DataFrame(cm_train)
+
+    sumaPositivos = 0
+    sumaFalsosPositivos = 0
+
+    for i in range(len(df_matrix_confusion_entrenamiento)):
+        for j in range(len(df_matrix_confusion_entrenamiento[i])):
+            if i == j:
+                sumaPositivos += df_matrix_confusion_entrenamiento[i][j]
+            else:
+                sumaFalsosPositivos += df_matrix_confusion_entrenamiento[i][j]
+
+    return df_matrix_confusion_entrenamiento, precisionNB, sumaPositivos, sumaFalsosPositivos, model_nb
