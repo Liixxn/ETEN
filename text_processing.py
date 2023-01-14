@@ -13,7 +13,8 @@ from sklearn.pipeline import Pipeline
 
 pd.options.mode.chained_assignment = None
 
-
+# Funcion que procesa los textos pasados y devuelve un dataframe con los textos leidos ademas de otra informacion
+# como el numero de carpetas totales etc
 def process_text(rutasCategorias):
     listaRecetas = []
     listaCategoria = []
@@ -33,7 +34,7 @@ def process_text(rutasCategorias):
             numeroTotalRecetas += len(sorted_files)
 
             for j in range(len(sorted_files)):
-                f = open(val[0] + '/' + sorted_files[j], "r", encoding="ANSI")
+                f = open(val[0] + '/' + sorted_files[j], "r", encoding="ISO 8859-1")
 
                 listaRecetas.append(f.read())
                 listaCategoria.append(i)
@@ -45,6 +46,7 @@ def process_text(rutasCategorias):
     return listaRecetas, listaCategoria, listaCuentaCarpeta, listaCuentaFicheros, numeroTotalRecetas
 
 
+# Funcion que pasa a minusculas y elimina los signos de puntuacion
 def tratamientoBasico(df_sinTratar):
     listatokens = []
 
@@ -60,6 +62,7 @@ def tratamientoBasico(df_sinTratar):
     return df_sinTratar
 
 
+# Funcion que aplica las stopwords al datafram que se le pasa
 def quit_stopwords(df_conStopwords):
     listaStopwords = []
     try:
@@ -86,7 +89,7 @@ def quit_stopwords(df_conStopwords):
     return df_conStopwords
 
 
-# Funcion que aplica el stemming a la lista que se le pasa
+# Funcion que aplica el stemming al dataframe que se le pasa
 def stemming(df_sinStemming):
     listaStemming = []
     lista_stem = []
@@ -95,13 +98,13 @@ def stemming(df_sinStemming):
     stemmer = SnowballStemmer('spanish')
 
     for indiceDF, fila in df_sinStemming.iterrows():
+        if indiceDF != 0:
+            lista_stem.append(listaStemming)
+            listaStemming = []
+
         for word in range(len(fila["Ficheros"])):
-            if word == 0:
-                lista_stem.append(listaStemming)
-                listaStemming = []
-            else:
-                w = stemmer.stem(fila["Ficheros"][word])
-                listaStemming.append(w)
+            w = stemmer.stem(fila["Ficheros"][word])
+            listaStemming.append(w)
 
     for i in range(len(lista_stem)):
         df_sinStemming["Ficheros"][i] = lista_stem[i]
@@ -112,14 +115,8 @@ def stemming(df_sinStemming):
 
 
 
+# Funcion que cuenta el numero de apariciones de cada palabra en cada receta y calcula su peso con Knn
 
-
-
-
-
-
-
-# Funcion que cuenta el numero de apariciones de cada palabra en cada receta y calcula su peso
 def calculate_weightKnn(df_entrenamiento):
     listaUnidos = []
     for i in range(len(df_entrenamiento["Ficheros"])):
@@ -130,16 +127,14 @@ def calculate_weightKnn(df_entrenamiento):
     X = df_entrenamiento['Ficheros']
     y = df_entrenamiento['Categorias']
 
-    # We use a pipeline to vectorize the data, then apply tfidf, and fit a kNN model
+
     model_knn = Pipeline([('vect', CountVectorizer(lowercase=False, preprocessor=None, tokenizer=None, stop_words=None,
                                                    min_df=1)),
                           ('tfidf', TfidfTransformer()),
                           ('knn', KNeighborsClassifier())])
 
-    # Fitting the model
+
     model_knn.fit(X, y)
-
-
 
     precisionKnn = round(model_knn.score(X, y), 4) * 100
 
@@ -151,6 +146,7 @@ def calculate_weightKnn(df_entrenamiento):
     sumaPositivos = 0
     sumaFalsosPositivos = 0
 
+    # Obtener los resultados de la matriz de confusion
     for i in range(len(df_matrix_confusion_entrenamiento)):
         for j in range(len(df_matrix_confusion_entrenamiento[i])):
             if i == j:
@@ -160,6 +156,9 @@ def calculate_weightKnn(df_entrenamiento):
 
     return df_matrix_confusion_entrenamiento, precisionKnn, sumaPositivos, sumaFalsosPositivos, model_knn
 
+
+
+# Funcion que cuenta el numero de apariciones de cada palabra en cada receta y calcula su peso con Random Forest
 
 def calculate_weightRF(df_entrenamiento):
     listaUnidos = []
@@ -187,6 +186,7 @@ def calculate_weightRF(df_entrenamiento):
     sumaPositivos = 0
     sumaFalsosPositivos = 0
 
+    # Obtener los resultados de la matriz de confusion
     for i in range(len(df_matrix_confusion_entrenamiento)):
         for j in range(len(df_matrix_confusion_entrenamiento[i])):
             if i == j:
@@ -196,6 +196,9 @@ def calculate_weightRF(df_entrenamiento):
 
     return df_matrix_confusion_entrenamiento, precisionRF, sumaPositivos, sumaFalsosPositivos, model_rf
 
+
+
+# Funcion que cuenta el numero de apariciones de cada palabra en cada receta y calcula su peso con Naive Bayes
 
 def calculate_weightNB(df_entrenamiento):
     listaUnidos = []
@@ -207,13 +210,11 @@ def calculate_weightNB(df_entrenamiento):
     X = df_entrenamiento['Ficheros']
     y = df_entrenamiento['Categorias']
 
-    # We use a pipeline to vectorize the data, then apply tfidf, and fit a kNN model
     model_nb = Pipeline([('vect', CountVectorizer(lowercase=False, preprocessor=None, tokenizer=None, stop_words=None,
                                                   min_df=1)),
                          ('tfidf', TfidfTransformer()),
                          ('nb', MultinomialNB())])
 
-    # Fitting the model
     model_nb.fit(X, y)
 
     precisionNB = round(model_nb.score(X, y), 4) * 100
@@ -226,6 +227,7 @@ def calculate_weightNB(df_entrenamiento):
     sumaPositivos = 0
     sumaFalsosPositivos = 0
 
+    # Obtener los resultados de la matriz de confusion
     for i in range(len(df_matrix_confusion_entrenamiento)):
         for j in range(len(df_matrix_confusion_entrenamiento[i])):
             if i == j:
