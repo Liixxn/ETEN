@@ -1,3 +1,8 @@
+
+    /*
+    Menu desplegable
+    */
+
     #MainWindow {
 		background-color: #fff;
 	}
@@ -55,3 +60,92 @@
 		color: black;
 	}
 
+<<<<<<< Updated upstream
+=======
+    /*
+    Ventana Descarga
+    */
+
+    #BotonDescargar {
+      background-color: #fa6400;
+      border: 1px solid transparent;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+
+
+    }
+    #BotonDescargar:hover {
+        background-color: #fb8332;
+        color: white;
+    }
+
+    #BotonSeleccionar {
+      background-color: #fa6400;
+      border: 1px solid transparent;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    #BotonSeleccionar:hover {
+        background-color: #fb8332;
+        color: white;
+    }
+    #comboBoxElegir {
+      background-color: #fa6400;
+      border: 1px solid transparent;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      }
+
+
+    #comboBoxCategorias, #categoriabtnAbrir, #categoriabtnAceptar, #categoriabtnAniadir, #btnGuardarModelo {
+      background-color: #fa6400;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+
+    }
+
+    #categoriabtnAbrir:hover,
+    #categoriabtnAceptar:hover,
+    #categoriabtnAniadir:hover,
+    #btnGuardarModelo:hover {
+        background-color: #fb8332;
+        color: white;
+    }
+
+
+   #SelecionarRecetas, #SeleccionarModelo, #btnConfirmarClasificacion, #GuardarComo {
+      background-color: #fa6400;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+   }
+   #SelecionarRecetas:hover, #SeleccionarModelo:hover, #btnConfirmarClasificacion:hover, #GuardarComo:hover {
+        background-color: #fb8332;
+        color: white;
+   }
+
+
+   #btnAbrirRecetaAnalizar, #btnCarrefour, #btnDia {
+      background-color: #fa6400;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+   }
+
+   #btnAbrirRecetaAnalizar:hover, #btnCarrefour:hover, #btnDia:hover{
+
+        background-color: #fb8332;
+        color: white;
+   }
+>>>>>>> Stashed changes
