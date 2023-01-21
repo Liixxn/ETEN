@@ -440,7 +440,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="pagina_descarga">
        <layout class="QGridLayout" name="gridLayout_2">
@@ -978,6 +978,13 @@
             <widget class="QPushButton" name="categoriabtnAceptar">
              <property name="text">
               <string>Aceptar</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="categoriabtnEliminar">
+             <property name="text">
+              <string>Eliminar</string>
              </property>
             </widget>
            </item>
