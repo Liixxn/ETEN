@@ -6,11 +6,8 @@ import tkinter.messagebox
 def comprobarCategoria(rutaCategoria, indexOpcion, rutasCategorias):
 
     txt_otherpath = False
-
     if indexOpcion not in rutasCategorias:
-
         for indice in rutasCategorias.values():
-
             if rutaCategoria in indice:
                 txt_otherpath = True
                 tkinter.messagebox.showerror("Error", "La carpeta seleccionada ya está asociada a otra categoría.")
@@ -19,8 +16,6 @@ def comprobarCategoria(rutaCategoria, indexOpcion, rutasCategorias):
             rutasCategorias[indexOpcion] = []
             rutasCategorias[indexOpcion].append(rutaCategoria)
             tkinter.messagebox.showinfo("Información", "Se ha añadido la ruta correctamente.")
-
-
     else:
         for indice in rutasCategorias.values():
             if rutaCategoria in indice:
@@ -31,8 +26,6 @@ def comprobarCategoria(rutaCategoria, indexOpcion, rutasCategorias):
             rutasCategorias[indexOpcion] = []
             rutasCategorias[indexOpcion].append(rutaCategoria)
             tkinter.messagebox.showinfo("Información", "Se ha modificado la ruta correctamente.")
-
-
 
     return rutasCategorias
 

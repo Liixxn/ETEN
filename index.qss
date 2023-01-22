@@ -102,7 +102,7 @@
       }
 
 
-    #comboBoxCategorias, #categoriabtnAbrir, #categoriabtnAceptar, #categoriabtnAniadir, #btnGuardarModelo {
+    #comboBoxCategorias, #categoriabtnAbrir, #categoriabtnAceptar, #categoriabtnAniadir, #btnGuardarModelo, #categoriabtnEliminar {
       background-color: #fa6400;
       color: #fff;
       font-size: 14px;
@@ -114,7 +114,8 @@
     #categoriabtnAbrir:hover,
     #categoriabtnAceptar:hover,
     #categoriabtnAniadir:hover,
-    #btnGuardarModelo:hover {
+    #btnGuardarModelo:hover
+    #categoriabtnEliminar:hover {
         background-color: #fb8332;
         color: white;
     }
@@ -146,3 +147,4 @@
         background-color: #fb8332;
         color: white;
    }
+

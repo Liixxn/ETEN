@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from pathlib import Path
 from nltk import word_tokenize, RegexpTokenizer
 import natsort
@@ -136,9 +137,11 @@ def calculate_weightKnn(df_entrenamiento):
 
     model_knn.fit(X, y)
 
-    precisionKnn = round(model_knn.score(X, y), 4) * 100
+
+    precisionKnn = round(model_knn.score(X, y) * 100, 2)
 
     y_train_pred = model_knn.predict(X)
+
     cm_train = confusion_matrix(y, y_train_pred)
 
     df_matrix_confusion_entrenamiento = pd.DataFrame(cm_train)
@@ -154,7 +157,33 @@ def calculate_weightKnn(df_entrenamiento):
             else:
                 sumaFalsosPositivos += df_matrix_confusion_entrenamiento[i][j]
 
-    return df_matrix_confusion_entrenamiento, precisionKnn, sumaPositivos, sumaFalsosPositivos, model_knn
+    df_matrix_confusion_precision_recall = df_matrix_confusion_entrenamiento.copy()
+
+    listaPrecision = []
+    listaRecall = []
+
+    # suma de diagonal
+    true_pos = np.diag(df_matrix_confusion_precision_recall)
+    # suma de columnas
+    false_pos = np.sum(df_matrix_confusion_precision_recall, axis=0) - true_pos
+    # suma de filas
+    false_neg = np.sum(df_matrix_confusion_precision_recall, axis=1) - true_pos
+
+    for i in range(len(df_matrix_confusion_precision_recall)):
+        recallCategoria = round((true_pos[i] / (true_pos[i] + false_pos[i])) * 100, 2)
+        listaRecall.append(recallCategoria)
+        precisionlCategoria = round((true_pos[i] / (true_pos[i] + false_neg[i])) * 100, 2)
+        listaPrecision.append(precisionlCategoria)
+
+
+    df_matrix_confusion_precision_recall["Precision"] = listaPrecision
+    ultimoIndice = df_matrix_confusion_precision_recall.index[-1]
+    df_matrix_confusion_precision_recall["Recall"] = listaRecall
+
+
+
+
+    return df_matrix_confusion_precision_recall, precisionKnn, sumaPositivos, sumaFalsosPositivos, model_knn
 
 
 
@@ -176,7 +205,7 @@ def calculate_weightRF(df_entrenamiento):
                          ('rf', RandomForestClassifier())])
 
     model_rf.fit(X, y)
-    precisionRF = round(model_rf.score(X, y), 4) * 100
+    precisionRF = round(model_rf.score(X, y) * 100, 2)
 
     y_train_pred = model_rf.predict(X)
     cm_train = confusion_matrix(y, y_train_pred)
@@ -186,6 +215,8 @@ def calculate_weightRF(df_entrenamiento):
     sumaPositivos = 0
     sumaFalsosPositivos = 0
 
+
+
     # Obtener los resultados de la matriz de confusion
     for i in range(len(df_matrix_confusion_entrenamiento)):
         for j in range(len(df_matrix_confusion_entrenamiento[i])):
@@ -194,7 +225,37 @@ def calculate_weightRF(df_entrenamiento):
             else:
                 sumaFalsosPositivos += df_matrix_confusion_entrenamiento[i][j]
 
-    return df_matrix_confusion_entrenamiento, precisionRF, sumaPositivos, sumaFalsosPositivos, model_rf
+    df_matrix_confusion_precision_recall = df_matrix_confusion_entrenamiento.copy()
+
+    listaPrecision = []
+    listaRecall = []
+
+    # suma de diagonal
+    true_pos = np.diag(df_matrix_confusion_precision_recall)
+    # suma de columnas
+    false_pos = np.sum(df_matrix_confusion_precision_recall, axis=0) - true_pos
+    # suma de filas
+    false_neg = np.sum(df_matrix_confusion_precision_recall, axis=1) - true_pos
+
+
+
+    for i in range(len(df_matrix_confusion_precision_recall)):
+        recallCategoria = round((true_pos[i] / (true_pos[i] + false_pos[i]))*100, 2)
+        listaRecall.append(recallCategoria)
+        precisionlCategoria = round((true_pos[i] / (true_pos[i] + false_neg[i]))*100, 2)
+        listaPrecision.append(precisionlCategoria)
+
+
+
+    df_matrix_confusion_precision_recall["Precision"] = listaPrecision
+    ultimoIndice = df_matrix_confusion_precision_recall.index[-1]
+    df_matrix_confusion_precision_recall["Recall"] = listaRecall
+
+
+
+
+
+    return df_matrix_confusion_precision_recall, precisionRF, sumaPositivos, sumaFalsosPositivos, model_rf
 
 
 
@@ -217,7 +278,7 @@ def calculate_weightNB(df_entrenamiento):
 
     model_nb.fit(X, y)
 
-    precisionNB = round(model_nb.score(X, y), 4) * 100
+    precisionNB = round(model_nb.score(X, y) * 100, 2)
 
     y_train_pred = model_nb.predict(X)
     cm_train = confusion_matrix(y, y_train_pred)
@@ -235,4 +296,29 @@ def calculate_weightNB(df_entrenamiento):
             else:
                 sumaFalsosPositivos += df_matrix_confusion_entrenamiento[i][j]
 
-    return df_matrix_confusion_entrenamiento, precisionNB, sumaPositivos, sumaFalsosPositivos, model_nb
+    df_matrix_confusion_precision_recall = df_matrix_confusion_entrenamiento.copy()
+
+    listaPrecision = []
+    listaRecall = []
+
+    # suma de diagonal
+    true_pos = np.diag(df_matrix_confusion_precision_recall)
+    # suma de columnas
+    false_pos = np.sum(df_matrix_confusion_precision_recall, axis=0) - true_pos
+    # suma de filas
+    false_neg = np.sum(df_matrix_confusion_precision_recall, axis=1) - true_pos
+
+    for i in range(len(df_matrix_confusion_precision_recall)):
+        recallCategoria = round((true_pos[i] / (true_pos[i] + false_pos[i])) * 100, 2)
+        listaRecall.append(recallCategoria)
+        precisionlCategoria = round((true_pos[i] / (true_pos[i] + false_neg[i])) * 100, 2)
+        listaPrecision.append(precisionlCategoria)
+
+
+    df_matrix_confusion_precision_recall["Precision"] = listaPrecision
+    ultimoIndice = df_matrix_confusion_precision_recall.index[-1]
+    df_matrix_confusion_precision_recall["Recall"] = listaRecall
+
+
+
+    return df_matrix_confusion_precision_recall, precisionNB, sumaPositivos, sumaFalsosPositivos, model_nb

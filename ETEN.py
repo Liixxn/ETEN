@@ -9,7 +9,6 @@ import pandas as pd
 import os
 import re
 import matplotlib.pyplot as plt
-import tkintermapview
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QDialog, QGraphicsScene
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -106,6 +105,7 @@ class MainWindow(QMainWindow):
         ventanaPrincipal.SeleccionarModelo.clicked.connect(self.selecionarModelo)
         ventanaPrincipal.btnConfirmarClasificacion.clicked.connect(self.clasificarTextos)
         ventanaPrincipal.GuardarComo.clicked.connect(self.guardarResultadosClasificacion)
+        ventanaPrincipal.categoriabtnEliminar.clicked.connect(self.eliminarseleccion)
 
         ventanaPrincipal.btnAbrirRecetaAnalizar.clicked.connect(self.abrirRecetaAnalizar)
         ventanaPrincipal.btnCarrefour.clicked.connect(self.abrirCarrefour)
@@ -246,6 +246,14 @@ class MainWindow(QMainWindow):
 
                         nombresCategorias[numElementos] = self.ui.comboBoxCategorias.itemText(numElementos)
 
+    def eliminarseleccion(self):
+        if not rutasCategorias:
+            tkinter.messagebox.showerror("Error", "No hay ninguna ruta de recetas para eliminar")
+        else:
+            rutasCategorias.clear()
+            self.ui.txt_paths.setText("")
+            tkinter.messagebox.showerror("Eliminado", "Se han eliminado las recetas seleccionadas anteriormente")
+
     #############################################################################################
 
     # Algortimo Knn
@@ -264,69 +272,76 @@ class MainWindow(QMainWindow):
 
         if self.ui.algoritmoKnn.isChecked():
 
-            if len(rutasCategorias) != 1:
-                start = time.time()
-                df_knn["Ficheros"], df_knn["Categorias"], df_textos_count["Carpeta"], df_textos_count[
-                    "Total"], TotalRecetas = text_processing.process_text(rutasCategorias)
-
-                listaNombreCategoriasNumero = []
-
-                for i, j in df_textos_count.iterrows():
-                    texto = self.ui.comboBoxCategorias.itemText(j["Carpeta"])
-                    listaNombreCategoriasNumero.append(texto)
-
-                for i in range(len(listaNombreCategoriasNumero)):
-                    df_textos_count["Carpeta"][i] = listaNombreCategoriasNumero[i]
-
-                model = pandas_table.DataFrameModel(df_textos_count)
-                self.ui.previewEntrenamiento.setModel(model)
-
-                self.ui.labelNumRecetasTotal.setText(str(TotalRecetas))
-
-                df_knn = text_processing.tratamientoBasico(df_knn)
-                df_knn = text_processing.quit_stopwords(df_knn)
-                df_knn = text_processing.stemming(df_knn)
-
-                df_algortimoKnn = df_knn
-
-                try:
-                    df_matrix_confusion_knn, precisionKnn, sumaPositivos, sumaFalsosPositivos, modeloKnn = text_processing.calculate_weightKnn(
-                        df_algortimoKnn)
-                    end = time.time()
-
-                    tiempoEjecuccion = end - start
-
-                    final_modeloKnn = modeloKnn
-                    modelosFinales[1] = final_modeloKnn
-
-                    model = pandas_table.DataFrameModel(df_matrix_confusion_knn)
-                    self.ui.matrizConfusionEntrenamiento.setModel(model)
-                    self.ui.labelPrecisionAlgoritmo.setText(str(precisionKnn))
-
-                    self.ui.labelTiempoEntrenamiento.setText(str(tiempoEjecuccion) + "s")
-
-                    self.figure = plt.figure(figsize=(5, 5))
-
-                    self.figureCanvas = FigureCanvas(self.figure)
-
-                    self.navigationToolbar = NavigationToolbar(self.figureCanvas, self)
-
-                    layout = QtWidgets.QVBoxLayout()
-                    layout.addWidget(self.navigationToolbar)
-                    layout.addWidget(self.figureCanvas)
-                    self.ui.widget_4.setLayout(layout)
-
-                    x = [sumaPositivos, sumaFalsosPositivos]
-                    ax = self.figure.add_subplot(111)
-                    ax.pie(x, labels=labelsPie, shadow=True, autopct='%1.2f%%', colors=coloresPie)
-
-                    self.figureCanvas.show()
-
-                except Exception as e:
-                    print(e)
+            if len(rutasCategorias) == 0:
+                tkinter.messagebox.showerror("Error", "No hay categorías añadidas")
 
             else:
-                tkinter.messagebox.showerror("Error", "Debe al menos seleccionar dos categorías")
+                if len(rutasCategorias) != 1:
+
+
+                    start = time.time()
+                    df_knn["Ficheros"], df_knn["Categorias"], df_textos_count["Carpeta"], df_textos_count[
+                        "Total"], TotalRecetas = text_processing.process_text(rutasCategorias)
+
+                    listaNombreCategoriasNumero = []
+
+                    for i, j in df_textos_count.iterrows():
+                        texto = self.ui.comboBoxCategorias.itemText(j["Carpeta"])
+                        listaNombreCategoriasNumero.append(texto)
+
+                    for i in range(len(listaNombreCategoriasNumero)):
+                        df_textos_count["Carpeta"][i] = listaNombreCategoriasNumero[i]
+
+                    model = pandas_table.DataFrameModel(df_textos_count)
+                    self.ui.previewEntrenamiento.setModel(model)
+
+                    self.ui.labelNumRecetasTotal.setText(str(TotalRecetas))
+
+                    df_knn = text_processing.tratamientoBasico(df_knn)
+                    df_knn = text_processing.quit_stopwords(df_knn)
+                    df_knn = text_processing.stemming(df_knn)
+
+                    df_algortimoKnn = df_knn
+
+                    try:
+                        df_matrix_confusion_knn, precisionKnn, sumaPositivos, sumaFalsosPositivos, modeloKnn = text_processing.calculate_weightKnn(
+                            df_algortimoKnn)
+                        end = time.time()
+
+                        tiempoEjecuccion = end - start
+
+                        final_modeloKnn = modeloKnn
+                        modelosFinales[1] = final_modeloKnn
+
+                        model = pandas_table.DataFrameModel(df_matrix_confusion_knn)
+                        self.ui.matrizConfusionEntrenamiento.setModel(model)
+                        self.ui.labelPrecisionAlgoritmo.setText(str(precisionKnn))
+
+                        self.ui.labelTiempoEntrenamiento.setText(str(tiempoEjecuccion) + "s")
+
+                        self.figure = plt.figure(figsize=(5, 5))
+
+                        self.figureCanvas = FigureCanvas(self.figure)
+
+                        self.navigationToolbar = NavigationToolbar(self.figureCanvas, self)
+
+                        layout = QtWidgets.QVBoxLayout()
+                        layout.addWidget(self.navigationToolbar)
+                        layout.addWidget(self.figureCanvas)
+
+                        self.ui.widget_4.setLayout(layout)
+                        x = [sumaPositivos, sumaFalsosPositivos]
+                        ax = self.figure.add_subplot(111)
+                        ax.pie(x, labels=labelsPie, shadow=True, autopct='%1.2f%%', colors=coloresPie)
+
+                        self.figureCanvas.show()
+
+
+                    except Exception as e:
+                        print(e)
+
+                else:
+                    tkinter.messagebox.showerror("Error", "Debe al menos seleccionar dos categorías")
 
     #############################################################################################
 
@@ -346,69 +361,73 @@ class MainWindow(QMainWindow):
 
         if self.ui.algortimoRandomForest.isChecked():
 
-            if len(rutasCategorias) != 1:
-                start = time.time()
-                df_rf["Ficheros"], df_rf["Categorias"], df_textos_count["Carpeta"], df_textos_count[
-                    "Total"], TotalRecetas = text_processing.process_text(rutasCategorias)
-
-                listaNombreCategoriasNumero = []
-
-                for i, j in df_textos_count.iterrows():
-                    texto = self.ui.comboBoxCategorias.itemText(j["Carpeta"])
-                    listaNombreCategoriasNumero.append(texto)
-
-                for i in range(len(listaNombreCategoriasNumero)):
-                    df_textos_count["Carpeta"][i] = listaNombreCategoriasNumero[i]
-
-                model = pandas_table.DataFrameModel(df_textos_count)
-                self.ui.previewEntrenamiento.setModel(model)
-
-                self.ui.labelNumRecetasTotal.setText(str(TotalRecetas))
-
-                df_rf = text_processing.tratamientoBasico(df_rf)
-                df_rf = text_processing.quit_stopwords(df_rf)
-                df_rf = text_processing.stemming(df_rf)
-
-                df_algortimoRF = df_rf
-                try:
-
-                    df_matrix_confusion_rf, precisionRF, sumaPositivos, sumaFalsosPositivos, modeloRF = text_processing.calculate_weightRF(
-                        df_algortimoRF)
-                    end = time.time()
-
-                    tiempoEjecuccion = end - start
-
-                    final_modeloRF = modeloRF
-                    modelosFinales[2] = final_modeloRF
-
-                    model = pandas_table.DataFrameModel(df_matrix_confusion_rf)
-                    self.ui.matrizConfusionEntrenamiento.setModel(model)
-                    self.ui.labelPrecisionAlgoritmo.setText(str(precisionRF))
-
-                    self.ui.labelTiempoEntrenamiento.setText(str(tiempoEjecuccion) + "s")
-
-                    self.figure = plt.figure(figsize=(5, 5))
-
-                    self.figureCanvas = FigureCanvas(self.figure)
-
-                    self.navigationToolbar = NavigationToolbar(self.figureCanvas, self)
-
-                    layout = QtWidgets.QVBoxLayout()
-                    layout.addWidget(self.navigationToolbar)
-                    layout.addWidget(self.figureCanvas)
-
-                    self.ui.widget_4.setLayout(layout)
-                    x = [sumaPositivos, sumaFalsosPositivos]
-                    ax = self.figure.add_subplot(111)
-                    ax.pie(x, labels=labelsPie, shadow=True, autopct='%1.2f%%', colors=coloresPie)
-
-                    self.figureCanvas.show()
-
-                except Exception as e:
-                    print(e)
-
+            if len(rutasCategorias) == 0:
+                tkinter.messagebox.showerror("Error", "No hay categorías añadidas")
             else:
-                tkinter.messagebox.showerror("Error", "Debe al menos seleccionar dos categorías")
+
+                if len(rutasCategorias) != 1:
+                    start = time.time()
+                    df_rf["Ficheros"], df_rf["Categorias"], df_textos_count["Carpeta"], df_textos_count[
+                        "Total"], TotalRecetas = text_processing.process_text(rutasCategorias)
+
+                    listaNombreCategoriasNumero = []
+
+                    for i, j in df_textos_count.iterrows():
+                        texto = self.ui.comboBoxCategorias.itemText(j["Carpeta"])
+                        listaNombreCategoriasNumero.append(texto)
+
+                    for i in range(len(listaNombreCategoriasNumero)):
+                        df_textos_count["Carpeta"][i] = listaNombreCategoriasNumero[i]
+
+                    model = pandas_table.DataFrameModel(df_textos_count)
+                    self.ui.previewEntrenamiento.setModel(model)
+
+                    self.ui.labelNumRecetasTotal.setText(str(TotalRecetas))
+
+                    df_rf = text_processing.tratamientoBasico(df_rf)
+                    df_rf = text_processing.quit_stopwords(df_rf)
+                    df_rf = text_processing.stemming(df_rf)
+
+                    df_algortimoRF = df_rf
+                    try:
+
+                        df_matrix_confusion_rf, precisionRF, sumaPositivos, sumaFalsosPositivos, modeloRF = text_processing.calculate_weightRF(
+                            df_algortimoRF)
+                        end = time.time()
+
+                        tiempoEjecuccion = end - start
+
+                        final_modeloRF = modeloRF
+                        modelosFinales[2] = final_modeloRF
+
+                        model = pandas_table.DataFrameModel(df_matrix_confusion_rf)
+                        self.ui.matrizConfusionEntrenamiento.setModel(model)
+                        self.ui.labelPrecisionAlgoritmo.setText(str(precisionRF))
+
+                        self.ui.labelTiempoEntrenamiento.setText(str(tiempoEjecuccion) + "s")
+
+                        self.figure = plt.figure(figsize=(5, 5))
+
+                        self.figureCanvas = FigureCanvas(self.figure)
+
+                        self.navigationToolbar = NavigationToolbar(self.figureCanvas, self)
+
+                        layout = QtWidgets.QVBoxLayout()
+                        layout.addWidget(self.navigationToolbar)
+                        layout.addWidget(self.figureCanvas)
+
+                        self.ui.widget_4.setLayout(layout)
+                        x = [sumaPositivos, sumaFalsosPositivos]
+                        ax = self.figure.add_subplot(111)
+                        ax.pie(x, labels=labelsPie, shadow=True, autopct='%1.2f%%', colors=coloresPie)
+
+                        self.figureCanvas.show()
+
+                    except Exception as e:
+                        print(e)
+
+                else:
+                    tkinter.messagebox.showerror("Error", "Debe al menos seleccionar dos categorías")
 
     #############################################################################################
 
@@ -428,68 +447,71 @@ class MainWindow(QMainWindow):
 
         if self.ui.algortimoNaiveBayes.isChecked():
 
-            if len(rutasCategorias) != 1:
-                start = time.time()
-                df_nb["Ficheros"], df_nb["Categorias"], df_textos_count["Carpeta"], df_textos_count[
-                    "Total"], TotalRecetas = text_processing.process_text(rutasCategorias)
-
-                listaNombreCategoriasNumero = []
-
-                for i, j in df_textos_count.iterrows():
-                    texto = self.ui.comboBoxCategorias.itemText(j["Carpeta"])
-                    listaNombreCategoriasNumero.append(texto)
-
-                for i in range(len(listaNombreCategoriasNumero)):
-                    df_textos_count["Carpeta"][i] = listaNombreCategoriasNumero[i]
-
-                model = pandas_table.DataFrameModel(df_textos_count)
-                self.ui.previewEntrenamiento.setModel(model)
-
-                self.ui.labelNumRecetasTotal.setText(str(TotalRecetas))
-
-                df_nb = text_processing.tratamientoBasico(df_nb)
-                df_nb = text_processing.quit_stopwords(df_nb)
-                df_nb = text_processing.stemming(df_nb)
-
-                df_algortimoNB = df_nb
-
-                try:
-                    df_matrix_confusion_nb, precisionNB, sumaPositivos, sumaFalsosPositivos, modeloNB = text_processing.calculate_weightNB(
-                        df_algortimoNB)
-                    end = time.time()
-
-                    tiempoEjecuccion = end - start
-
-                    final_modeloNB = modeloNB
-                    modelosFinales[3] = final_modeloNB
-
-                    model = pandas_table.DataFrameModel(df_matrix_confusion_nb)
-                    self.ui.matrizConfusionEntrenamiento.setModel(model)
-                    self.ui.labelPrecisionAlgoritmo.setText(str(precisionNB))
-
-                    self.ui.labelTiempoEntrenamiento.setText(str(tiempoEjecuccion) + "s")
-
-                    self.figure = plt.figure(figsize=(5, 5))
-
-                    self.figureCanvas = FigureCanvas(self.figure)
-
-                    self.navigationToolbar = NavigationToolbar(self.figureCanvas, self)
-
-                    layout = QtWidgets.QVBoxLayout()
-                    layout.addWidget(self.navigationToolbar)
-                    layout.addWidget(self.figureCanvas)
-                    self.ui.widget_4.setLayout(layout)
-
-                    x = [sumaPositivos, sumaFalsosPositivos]
-                    ax = self.figure.add_subplot(111)
-                    ax.pie(x, labels=labelsPie, shadow=True, autopct='%1.2f%%', colors=coloresPie)
-
-                    self.figureCanvas.show()
-                except Exception as e:
-                    print(e)
-
+            if len(rutasCategorias) == 0:
+                tkinter.messagebox.showerror("Error", "No hay categorías añadidas")
             else:
-                tkinter.messagebox.showerror("Error", "Debe al menos seleccionar dos categorías")
+                if len(rutasCategorias) != 1:
+                    start = time.time()
+                    df_nb["Ficheros"], df_nb["Categorias"], df_textos_count["Carpeta"], df_textos_count[
+                        "Total"], TotalRecetas = text_processing.process_text(rutasCategorias)
+
+                    listaNombreCategoriasNumero = []
+
+                    for i, j in df_textos_count.iterrows():
+                        texto = self.ui.comboBoxCategorias.itemText(j["Carpeta"])
+                        listaNombreCategoriasNumero.append(texto)
+
+                    for i in range(len(listaNombreCategoriasNumero)):
+                        df_textos_count["Carpeta"][i] = listaNombreCategoriasNumero[i]
+
+                    model = pandas_table.DataFrameModel(df_textos_count)
+                    self.ui.previewEntrenamiento.setModel(model)
+
+                    self.ui.labelNumRecetasTotal.setText(str(TotalRecetas))
+
+                    df_nb = text_processing.tratamientoBasico(df_nb)
+                    df_nb = text_processing.quit_stopwords(df_nb)
+                    df_nb = text_processing.stemming(df_nb)
+
+                    df_algortimoNB = df_nb
+
+                    try:
+                        df_matrix_confusion_nb, precisionNB, sumaPositivos, sumaFalsosPositivos, modeloNB = text_processing.calculate_weightNB(
+                            df_algortimoNB)
+                        end = time.time()
+
+                        tiempoEjecuccion = end - start
+
+                        final_modeloNB = modeloNB
+                        modelosFinales[3] = final_modeloNB
+
+                        model = pandas_table.DataFrameModel(df_matrix_confusion_nb)
+                        self.ui.matrizConfusionEntrenamiento.setModel(model)
+                        self.ui.labelPrecisionAlgoritmo.setText(str(precisionNB))
+
+                        self.ui.labelTiempoEntrenamiento.setText(str(tiempoEjecuccion) + "s")
+
+                        self.figure = plt.figure(figsize=(5, 5))
+
+                        self.figureCanvas = FigureCanvas(self.figure)
+
+                        self.navigationToolbar = NavigationToolbar(self.figureCanvas, self)
+
+                        layout = QtWidgets.QVBoxLayout()
+                        layout.addWidget(self.navigationToolbar)
+                        layout.addWidget(self.figureCanvas)
+                        self.ui.widget_4.setLayout(layout)
+
+                        x = [sumaPositivos, sumaFalsosPositivos]
+                        ax = self.figure.add_subplot(111)
+                        ax.pie(x, labels=labelsPie, shadow=True, autopct='%1.2f%%', colors=coloresPie)
+
+                        self.figureCanvas.show()
+                    except Exception as e:
+                        print(e)
+
+                else:
+                    tkinter.messagebox.showerror("Error", "Debe al menos seleccionar dos categorías")
 
 
     #############################################################################################
@@ -832,17 +854,25 @@ class MainWindow(QMainWindow):
         sesionBuscador = ""
 
         if len(diccionarioIngredientes) == 0:
-            # browser = webdriver.Chrome('drivers/chromedriver.exe', chrome_options=chrome_options)
-            browser.get(
-                "https://www.carrefour.es/supermercado?ic_source=portal&ic_medium=menu-links&ic_content=section-home")
+            try:
+                # browser = webdriver.Chrome('drivers/chromedriver.exe', chrome_options=chrome_options)
+                browser.get(
+                    "https://www.carrefour.es/supermercado?ic_source=portal&ic_medium=menu-links&ic_content=section-home")
+            except Exception as e:
+                print(e)
+
 
         else:
 
             if len(ingredienteSeleccionado) == 0:
                 # browser = webdriver.Chrome('drivers/chromedriver.exe', chrome_options=chrome_options)
-                browser.get(
-                    "https://www.carrefour.es/supermercado?ic_source=portal&ic_medium=menu-links&ic_content=section"
-                    "-home")
+                try:
+                    browser.get(
+                        "https://www.carrefour.es/supermercado?ic_source=portal&ic_medium=menu-links&ic_content=section"
+                        "-home")
+                except Exception as e:
+                    print(e)
+
             else:
                 print(ingredienteSeleccionado[0])
                 ingredienteBuscar = ingredienteSeleccionado[0]
