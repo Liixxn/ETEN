@@ -97,7 +97,52 @@ de ETEN.</p>
 
 <hr>
 
-<h3 align="center">Ventana Principal de ETEN</h3>
+<h3 align="center">Ventana Principal de ETEN🎞</h3>
 <div align="center">
-  <img src="https://github.com/Liixxn/ETEN/blob/main/imgs/VentanaPrincipal.png" alt="Ventana Principal de ETEN" width="60%" height="60%">
+  <kbd>
+    <img src="https://github.com/Liixxn/ETEN/blob/main/imgs/VentanaPrincipal.png" alt="Ventana Principal de ETEN" width="60%" height="60%">
+  </kbd>
 </div>
+<div>
+  <p>La ventana principal de la aplicación ETEN, dónde se puede introducir el link o url de un vídeo ó lista de reproducción, para descargar la grabación.</p>
+  <p>Y una vez descargado el vídeo, seleccionarlo para obtener la transcripción del contenido.</p>
+</div>
+
+<br>
+
+<h3 align="center">Ventana de Entrenamiento📝</h3>
+<div align="center">
+  <kbd>
+    <img src="https://github.com/Liixxn/ETEN/blob/main/imgs/VentanaEntrenamiento.png" alt="Ventana de Entrenamiento de ETEN" width="60%" height="60%">
+  </kbd>
+</div>
+<div>
+  <p>La ventana de entrenamiento, dónde se pueden establecer las categorías con las que se quiere trabajar, añadir alguna si fuera necesario y selección del algoritmo que se desea entrenar.</p>
+  <p>Además del guardado del modelo, en la ubicación que se quiera.</p>
+</div>
+
+<br>
+
+<h3 align="center">Ventana de Clasificación🗃</h3>
+<div align="center">
+  <kbd>
+    <img src="https://github.com/Liixxn/ETEN/blob/main/imgs/VentanaClasificacion.png" alt="Ventana de Clasificación de ETEN" width="60%" height="60%">
+  </kbd>
+</div>
+<div>
+  <p>La ventana de clasificación, dónde se realizará la clasificación de las nuevas recetas. Seleccionando las nuevas recetas y el modelo guardado ya entrenado, éste clasificará las recetas bajo las categorías correspondientes.</p>
+  <p>Asimismo, existe la posibilidad de guardar los resultados en diferentes formatos de archivos.</p>
+</div>
+
+<br>
+
+<h3 align="center">Ventana de Ingredientes🥘</h3>
+<div align="center">
+  <kbd>
+    <img src="https://github.com/Liixxn/ETEN/blob/main/imgs/VentanaMapa.png" alt="Ventana para obtener los ingredientes de una receta" width="60%" height="60%">
+  </kbd>
+</div>
+<div>
+  <p>La ventana de "Mapa", cuenta con un sistema de extracción de ingredientes de una receta.</p>
+</div>
+<br>
